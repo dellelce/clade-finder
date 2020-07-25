@@ -1,15 +1,15 @@
 # clade-finder
 Determines Y-Haplogroup Clade From Positive and Negative SNPs
 
-Installation
+## Installation
 
-install pip3
+requirements:
 
-Do not install pytabix using the --user paradigm. If you do, it will not be accessible by the apache www-data user.
-Instead, use sudo as below:
+* Docker
+* GNU make
 
-sudo pip3 install pytabix
+to build a local Docker image just run "make build".
 
-#install pysam and pyvcf
-sudo apt-get install python3-pysam
-sudo apt-get install python3-pyvcf
+This is not complete as I am reviewing the "origin" code and considering converting the php side to Python/Flask
+
+
