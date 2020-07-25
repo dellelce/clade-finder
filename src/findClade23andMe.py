@@ -13,6 +13,8 @@ clade = None
 if len(sys.argv) > 2:
     twentyThreeAndMeFile = sys.argv[1]
     tbPositionSNPsFile = sys.argv[2]
-    
-(snps, xReads, yReads) = CommonMethods.getSNPsFrom23AndMe(twentyThreeAndMeFile, tbPositionSNPsFile)
+
+(snps, xReads,
+ yReads) = CommonMethods.getSNPsFrom23AndMe(twentyThreeAndMeFile,
+                                            tbPositionSNPsFile)
 print(", ".join(snps) + "==" + str(xReads) + "," + str(yReads))

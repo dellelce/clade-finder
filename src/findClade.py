@@ -23,7 +23,7 @@ if len(sys.argv) > 4:
             else:
                 if stripped[-1] == "-":
                     negatives.add(stripped[0:-1])
- 
+
 #tbcladeSNP = tabix.open(cladeSNPFilePath)
 #
 #print("J-Z1043", cladeSNPFilePath, SNPcladeFilePath)
@@ -35,8 +35,9 @@ if len(sys.argv) > 4:
 #print(", ".join(getSNPClades("M12")))
 #print(", ".join(getSNPClades("USP9YPLUS3636")))
 
-CommonMethods.findCladeRefactored(positives, negatives, tbCladeSNPFile, tbSNPcladeFile, snpPanelConfigFile)
-        
+CommonMethods.findCladeRefactored(positives, negatives, tbCladeSNPFile,
+                                  tbSNPcladeFile, snpPanelConfigFile)
+
 #hier = createMinimalTree(["PH1080","USP9YPLUS3636","Z1043"])
 #print(", ".join(list(hier.keys())))
 #

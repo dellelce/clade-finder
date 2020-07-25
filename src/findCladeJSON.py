@@ -5,7 +5,6 @@ Created on Thu Apr  2 14:07:25 2020
 @author: hunte
 """
 
-
 from Common import CommonMethods
 import sys
 
@@ -23,7 +22,7 @@ if len(sys.argv) > 4:
     params = sys.argv[4]
     snpPanelConfigFile = sys.argv[5]
     (positives, negatives) = CommonMethods.getEncodedPositivesNegatives(snps)
- 
+
 #tbcladeSNP = tabix.open(cladeSNPFilePath)
 #
 #print("J-Z1043", cladeSNPFilePath, SNPcladeFilePath)
@@ -35,6 +34,10 @@ if len(sys.argv) > 4:
 #print(", ".join(getSNPClades("M12")))
 #print(", ".join(getSNPClades("USP9YPLUS3636")))
 if clade:
-    print(CommonMethods.getJSONForClade(params, clade, positives, negatives, tbCladeSNPFile, tbSNPcladeFile))
+    print(
+        CommonMethods.getJSONForClade(params, clade, positives, negatives,
+                                      tbCladeSNPFile, tbSNPcladeFile))
 else:
-    print(CommonMethods.getJSON(params, positives, negatives, tbCladeSNPFile, tbSNPcladeFile, snpPanelConfigFile))
+    print(
+        CommonMethods.getJSON(params, positives, negatives, tbCladeSNPFile,
+                              tbSNPcladeFile, snpPanelConfigFile))

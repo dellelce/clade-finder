@@ -22,10 +22,11 @@ else:
     treeFile = "C:\clade-finder-files\yfull.json"
     cladeSNPFilePath = "C:\clade-finder-files\cladeSNPs"
     SNPcladeFilePath = "C:\clade-finder-files\SNPclades"
-    
+
 hierarchy = {}
 childMap = {}
 snps = {}
+
 
 def parseTreeJSON(fil):
     thefile = open(fil)
@@ -34,32 +35,41 @@ def parseTreeJSON(fil):
     recurseTreeJson(root)
     return (root["id"])
 
+
 #remove parens
 #replace plus with PLUS
 #replace minus with MINUS
 
+
 def replaceAsNecessary(snp):
-    return snp.replace("(","_L_PAREN_").replace(")","_R_PAREN_").replace("+","_PLUS_").replace("-","_MINUS_").replace(" ","").replace(".","_DOT_")
+    return snp.replace("(", "_L_PAREN_").replace(")", "_R_PAREN_").replace(
+        "+", "_PLUS_").replace("-",
+                               "_MINUS_").replace(" ",
+                                                  "").replace(".", "_DOT_")
+
 
 def getToIgnore(file):
     ignore = []
     with open(file, "r") as r:
         for line in r.readlines():
-            snp = line.replace("\n","")
+            snp = line.replace("\n", "")
             if snp != "":
                 ignore.append(snp)
     return ignore
-        
-toIgnore = getToIgnore(toIgnoreFilePath) #["PF6234"]
+
+
+toIgnore = getToIgnore(toIgnoreFilePath)  #["PF6234"]
+
 
 def parseSNPsString(snpsString):
     thesnps = set([])
-    for snp in snpsString.split(", "):        
+    for snp in snpsString.split(", "):
         replaced = replaceAsNecessary(snp)
         if replaced != "":
             thesnps.add(replaced)
     return thesnps
-            
+
+
 def recurseTreeJson(node):
     global hierarchy
     global snps
@@ -73,35 +83,41 @@ def recurseTreeJson(node):
                 snps[child["id"]] = parseSNPsString(child["snps"])
                 recurseTreeJson(child)
 
+
 def createTextFile(cladeSNPFilePath, SNPcladeFilePath, uniqSnpToProducts):
     with open(cladeSNPFilePath, "w") as w:
         for clade in snps:
             for snp in snps[clade]:
                 w.write("\t".join([clade, "1", "1", snp, "."]) + "\n")
             if clade in hierarchy:
-                w.write("\t".join([clade, "2", "2", hierarchy[clade], "."]) + "\n")
+                w.write("\t".join([clade, "2", "2", hierarchy[clade], "."]) +
+                        "\n")
             if clade in childMap:
                 for child in childMap[clade]:
                     w.write("\t".join([clade, "3", "3", child, "."]) + "\n")
     w.close()
-    with open(SNPcladeFilePath,  "w") as w:
+    with open(SNPcladeFilePath, "w") as w:
         for clade in snps:
             for snp in snps[clade]:
                 w.write("\t".join([snp, "1", "1", clade, "."]) + "\n")
                 if "/" in snp:
                     for same_name_snp in snp.split("/"):
                         if same_name_snp not in toIgnore:
-                            w.write("\t".join([same_name_snp, "2", "2", snp, "."]) + "\n")
+                            w.write("\t".join(
+                                [same_name_snp, "2", "2", snp, "."]) + "\n")
         for uniqSNP in uniqSnpToProducts:
-            w.write("\t".join([uniqSNP, "3", "3", uniqSnpToProducts[uniqSNP], "."]) + "\n")
+            w.write("\t".join(
+                [uniqSNP, "3", "3", uniqSnpToProducts[uniqSNP], "."]) + "\n")
     w.close()
     with open(hg19positionMarkersFilePath, "w") as w:
         with open(hg19positionMarkersTSV, "r") as r:
             for line in r.readlines():
-                splt = line.replace("\n","").split("\t")
+                splt = line.replace("\n", "").split("\t")
                 if len(splt) == 3 and splt[0] != "":
-                    marker_safe = replaceAsNecessary(splt[1])             
-                    w.write("\t".join([splt[0], "1", "1", marker_safe, splt[2]]) + "\n")
+                    marker_safe = replaceAsNecessary(splt[1])
+                    w.write(
+                        "\t".join([splt[0], "1", "1", marker_safe, splt[2]]) +
+                        "\n")
                 else:
                     print("ignored: " + ",".join(splt))
         r.close()
@@ -109,18 +125,20 @@ def createTextFile(cladeSNPFilePath, SNPcladeFilePath, uniqSnpToProducts):
     with open(hg38positionMarkersFilePath, "w") as w:
         with open(hg38positionMarkersTSV, "r") as r:
             for line in r.readlines():
-                splt = line.replace("\n","").split("\t")
+                splt = line.replace("\n", "").split("\t")
                 if len(splt) == 3 and splt[0] != "":
-                    marker_safe = replaceAsNecessary(splt[1])             
-                    w.write("\t".join([splt[0], "1", "1", marker_safe, splt[2]]) + "\n")
+                    marker_safe = replaceAsNecessary(splt[1])
+                    w.write(
+                        "\t".join([splt[0], "1", "1", marker_safe, splt[2]]) +
+                        "\n")
                 else:
                     print("ignored: " + ",".join(splt))
         r.close()
     w.close()
-        
+
 
 def getMappingOfSamenameSNPtoUniq():
-    
+
     uniqsnps = set([])
     for clade in snps:
         for snp in snps[clade]:
@@ -131,14 +149,15 @@ def getMappingOfSamenameSNPtoUniq():
             samenamesnps = snp.split("/")
             for samenamesnp in samenamesnps:
                 samenameSNPToUniqSNP[samenamesnp] = snp
-    
+
     return samenameSNPToUniqSNP
+
 
 def getUniqSNPtoProducts(productsFilePath):
     snpToProducts = {}
     with open(productsFilePath, "r") as r:
         for line in r.readlines():
-            splt = line.replace("\n","").split("\t")
+            splt = line.replace("\n", "").split("\t")
             if len(splt) == 2:
                 snp = replaceAsNecessary(splt[0])
                 snpToProducts[snp] = splt[1]
@@ -152,7 +171,7 @@ def getUniqSNPtoProducts(productsFilePath):
             uniqSNPtoProducts[snp] = snpToProducts[snp]
     return uniqSNPtoProducts
 
-           
+
 parseTreeJSON(treeFile)
 uniqSnpToProducts = getUniqSNPtoProducts(productsFilePath)
 createTextFile(cladeSNPFilePath, SNPcladeFilePath, uniqSnpToProducts)
